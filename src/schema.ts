@@ -10,4 +10,10 @@ export const GptOssTextGenerationInputSchema = z.object({
 			})
 		)
 	),
+	reasoning: z
+		.object({
+			effort: z.enum(['high', 'medium', 'low', 'minimal']).optional(),
+			summary: z.enum(['auto', 'concise', 'detailed']).optional(),
+		})
+		.optional(),
 });

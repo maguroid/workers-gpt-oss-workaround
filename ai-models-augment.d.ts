@@ -18,6 +18,13 @@ interface GptOssTextGenerationInput {
 	instructions?: string;
 	/** Text, image, or file inputs to the model, used to generate a response. */
 	input: string | GptOssTextGenerationInputObject[];
+	/** Configuration options for reasoning models. */
+	reasoning?: {
+		/** default to 'medium' */
+		effort?: 'high' | 'medium' | 'low' | 'minimal';
+		/** A summary of the reasoning performed by the model. This can be useful for debugging and understanding the model's reasoning process.  */
+		summary?: 'auto' | 'concise' | 'detailed';
+	};
 }
 
 type GptOssTextGenerationMessageOutput = {

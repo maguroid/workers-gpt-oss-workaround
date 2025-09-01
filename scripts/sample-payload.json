@@ -1,0 +1,11 @@
+{
+	"instructions": "You are a concise assistant.",
+	"input": [
+		{ "role": "developer", "content": "Keep answers short and clear." },
+		{ "role": "user", "content": "Explain what Cloudflare Workers are in one sentence." }
+	],
+	"reasoning": {
+		"effort": "high",
+		"summary": "concise"
+	}
+}

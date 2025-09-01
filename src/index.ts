@@ -21,9 +21,17 @@ const textInputHandler: RouteHandler = async (request, env, ctx) => {
 	if (!prompt) {
 		return new Response('No prompt provided', { status: 400 });
 	}
-	const response = await env.AI.run('@cf/openai/gpt-oss-120b', {
-		input: prompt,
-	});
+	const response = await env.AI.run(
+		'@cf/openai/gpt-oss-120b',
+		{
+			input: prompt,
+		},
+		{
+			gateway: {
+				id: env.GATEWAY_ID,
+			},
+		}
+	);
 	if (!response) {
 		return new Response('No response from model', { status: 500 });
 	}
@@ -32,17 +40,25 @@ const textInputHandler: RouteHandler = async (request, env, ctx) => {
 
 const textInputObjectHandler: RouteHandler = async (request, env, ctx) => {
 	const payload = await request.json();
-	if (typeof payload !== 'object' || payload === null || !('prompt' in payload)) {
+	if (typeof payload !== 'object' || payload === null) {
 		return new Response('Invalid payload', { status: 400 });
 	}
 
-	const parsedPrompt = GptOssTextGenerationInputSchema.safeParse({ input: payload.prompt });
+	const parsedPrompt = GptOssTextGenerationInputSchema.safeParse(payload);
 	if (!parsedPrompt.success) {
 		return new Response(JSON.stringify({ error: 'Invalid prompt', details: z.treeifyError(parsedPrompt.error) }), { status: 400 });
 	}
-	const response = await env.AI.run('@cf/openai/gpt-oss-120b', {
-		...parsedPrompt.data,
-	});
+	const response = await env.AI.run(
+		'@cf/openai/gpt-oss-120b',
+		{
+			...parsedPrompt.data,
+		},
+		{
+			gateway: {
+				id: env.GATEWAY_ID,
+			},
+		}
+	);
 	if (!response) {
 		return new Response('No response from model', { status: 500 });
 	}
@@ -56,11 +72,17 @@ const routes: Record<string, RouteHandler> = {
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		const { pathname } = new URL(request.url);
-		const routeHandler = routes[`${request.method} ${pathname}`];
-		if (!routeHandler) {
-			return new Response('Method Not found', { status: 404 });
+		try {
+			const { pathname } = new URL(request.url);
+			const routeHandler = routes[`${request.method} ${pathname}`];
+			if (!routeHandler) {
+				return new Response('Method Not found', { status: 404 });
+			}
+			const response = await routeHandler(request, env, ctx);
+			return response;
+		} catch (error) {
+			console.error('Error in fetch', error);
+			return new Response('Internal Server Error', { status: 500 });
 		}
-		return routeHandler(request, env, ctx);
 	},
 } satisfies ExportedHandler<Env>;
