@@ -1,6 +1,8 @@
 // Type augmentation for custom Workers AI model IDs
 // Maps a new text generation model ID to the BaseAiTextGeneration task type
 
+import { JSONSchema } from 'zod/v4/core';
+
 export {};
 
 // see:
@@ -25,22 +27,46 @@ interface GptOssTextGenerationInput {
 		/** A summary of the reasoning performed by the model. This can be useful for debugging and understanding the model's reasoning process.  */
 		summary?: 'auto' | 'concise' | 'detailed';
 	};
+	text?: {
+		format?:
+			| {
+					type: 'text';
+			  }
+			| {
+					type: 'json_schema';
+					name: string;
+					schema: JSONSchema;
+					strict?: boolean;
+			  };
+	};
 }
 
-type GptOssTextGenerationMessageOutput = {
-	type: 'message';
-	content: [
-		{
-			type: 'output_text';
-			text: string;
-		}
-	];
-};
+type GptOssTextGenerationMessageOutput =
+	| {
+			type: 'message';
+			content: [
+				| {
+						type: 'output_text';
+						text: string;
+				  }
+				| {
+						type: 'refusal';
+						refusal: string;
+				  }
+			];
+	  }
+	| {
+			type: 'reasoning';
+			content: {
+				type: 'reasoning_text';
+				text: string;
+			};
+	  };
 
 type GptOssTextGenerationOutputObject = GptOssTextGenerationMessageOutput;
 
 interface GptOssTextGenerationOutput {
-	output: GptOssTextGenerationOutputObject;
+	output: GptOssTextGenerationOutputObject[];
 }
 
 interface GptOssTextGeneration {

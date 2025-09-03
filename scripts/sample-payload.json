@@ -5,7 +5,7 @@
 		{ "role": "user", "content": "Explain what Cloudflare Workers are in one sentence." }
 	],
 	"reasoning": {
-		"effort": "high",
+		"effort": "low",
 		"summary": "concise"
 	}
 }

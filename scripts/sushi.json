@@ -1,0 +1,4 @@
+{
+	"instructions": "You are a concise assistant.",
+	"input": [{ "role": "user", "content": "日本語で、寿司の注文方法を3ステップで教えて。" }]
+}

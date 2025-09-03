@@ -16,6 +16,10 @@
 		"wrangler": "^4.33.1"
 	},
 	"dependencies": {
+		"@ai-sdk/openai": "^2.0.23",
+		"@ai-sdk/provider": "^2.0.0",
+		"ai": "^5.0.29",
+		"workers-ai-provider": "^0.7.5",
 		"zod": "^4.1.5"
 	}
 }
