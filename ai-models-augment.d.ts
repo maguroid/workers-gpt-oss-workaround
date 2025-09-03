@@ -3,19 +3,17 @@
 
 import { JSONSchema } from 'zod/v4/core';
 
-export {};
-
 // see:
 // - https://platform.openai.com/docs/guides/text
 // - https://platform.openai.com/docs/api-reference/responses
 
-interface GptOssTextGenerationInputObject {
+export interface GptOssTextGenerationInputObject {
 	role: 'developer' | 'user';
 	/** Only string content for simplicity */
 	content: string;
 }
 
-interface GptOssTextGenerationInput {
+export interface GptOssTextGenerationInput {
 	/** A system (or developer) message inserted into the model's context. */
 	instructions?: string;
 	/** Text, image, or file inputs to the model, used to generate a response. */
@@ -41,7 +39,7 @@ interface GptOssTextGenerationInput {
 	};
 }
 
-type GptOssTextGenerationMessageOutput =
+export type GptOssTextGenerationMessageOutput =
 	| {
 			type: 'message';
 			content: [
@@ -63,9 +61,9 @@ type GptOssTextGenerationMessageOutput =
 			};
 	  };
 
-type GptOssTextGenerationOutputObject = GptOssTextGenerationMessageOutput;
+export type GptOssTextGenerationOutputObject = GptOssTextGenerationMessageOutput;
 
-interface GptOssTextGenerationOutput {
+export interface GptOssTextGenerationOutput {
 	output: GptOssTextGenerationOutputObject[];
 }
 

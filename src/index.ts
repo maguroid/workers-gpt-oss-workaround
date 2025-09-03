@@ -13,6 +13,7 @@
 
 import z from 'zod';
 import { GptOssTextGenerationInputSchema } from './schema';
+import { parseGptOssResponse } from './utils';
 
 type RouteHandler = (request: Request, env: Env, ctx: ExecutionContext) => Promise<Response>;
 
@@ -95,23 +96,13 @@ const structuredOutputHandler: RouteHandler = async (request, env, ctx) => {
 		{ gateway: { id: env.GATEWAY_ID } }
 	);
 
-	if (!response) {
-		return new Response('No response from model', { status: 500 });
+	const parsed = await parseGptOssResponse(response, schema);
+
+	if (!parsed.output_parsed) {
+		return new Response('No output parsed', { status: 500 });
 	}
 
-	const message = response.output.find((item) => item.type === 'message');
-	if (!message) {
-		return new Response('No message in response', { status: 500 });
-	}
-
-	const output = message.content.find((content) => content.type === 'output_text');
-	if (!output) {
-		return new Response('No output text in response', { status: 500 });
-	}
-
-	const parsed = schema.parse(JSON.parse(output.text));
-
-	return new Response(JSON.stringify(parsed));
+	return new Response(JSON.stringify(parsed.output_parsed));
 };
 
 const routes: Record<string, RouteHandler> = {
